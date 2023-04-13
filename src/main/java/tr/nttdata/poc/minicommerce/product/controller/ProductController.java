@@ -19,9 +19,6 @@ import tr.nttdata.poc.minicommerce.product.service.ProductService;
 import java.io.IOException;
 import java.util.List;
 
-import static tr.nttdata.poc.minicommerce.product.service.UtilService.decompressImage;
-import static tr.nttdata.poc.minicommerce.product.service.UtilService.imgToBase64;
-
 @RestController
 public class ProductController {
     @Autowired
@@ -43,6 +40,7 @@ public class ProductController {
 
     @GetMapping("/products")
     public List<Product> getAllProducts() {
+
         return productService.getAllProducts();
     }
 
@@ -77,19 +75,5 @@ public class ProductController {
         } else {
             return ResponseEntity.notFound().build();
         }
-    }
-
-    // TODO: Remove after tests
-    @GetMapping("/converted-images")
-    public List<Product> test() {
-
-        List<Product> list = productService.getAllProducts();
-        for (Product item : list) {
-            if (item.getImage() != null) {
-                String base64String = imgToBase64(decompressImage(item.getImage()));
-                item.setImgBase64(base64String);
-            }
-        }
-        return list;
     }
 }

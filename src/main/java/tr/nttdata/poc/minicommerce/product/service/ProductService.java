@@ -10,8 +10,12 @@ import org.springframework.web.multipart.MultipartFile;
 import tr.nttdata.poc.minicommerce.product.model.Product;
 import tr.nttdata.poc.minicommerce.product.repository.ProductRepository;
 
+import static tr.nttdata.poc.minicommerce.product.service.UtilService.decompressImage;
+import static tr.nttdata.poc.minicommerce.product.service.UtilService.imgToBase64;
+
 @Service
 public class ProductService {
+
     @Autowired
     private ProductRepository productRepository;
 
@@ -24,6 +28,14 @@ public class ProductService {
 
     public List<Product> getAllProducts() {
         List<Product> products = productRepository.findAll();
+
+        for (Product item : products) {
+            if (item.getImage() != null) {
+                String base64String = imgToBase64(decompressImage(item.getImage()));
+                item.setImgBase64(base64String);
+            }
+        }
+
         return products;
     }
 
