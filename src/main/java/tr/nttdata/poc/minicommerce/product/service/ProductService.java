@@ -1,10 +1,12 @@
 package tr.nttdata.poc.minicommerce.product.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.springframework.web.multipart.MultipartFile;
 import tr.nttdata.poc.minicommerce.product.model.Product;
 import tr.nttdata.poc.minicommerce.product.repository.ProductRepository;
 
@@ -25,7 +27,11 @@ public class ProductService {
         return products;
     }
 
-    public Product createProduct(Product product) {
+    public Product createProduct(Product product, MultipartFile file) throws IOException {
+
+        byte[] compressedImage = UtilService.compressImage(file.getBytes());
+        product.setImage(compressedImage);
+
         Product createdProduct = productRepository.save(product);
         return createdProduct;
     }
