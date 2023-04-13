@@ -3,5 +3,6 @@ CREATE TABLE IF NOT EXISTS products (
   name VARCHAR(255) NOT NULL,
   description VARCHAR(255),
   imageuri VARCHAR(1000),
+  image BLOB,
   price DOUBLE NOT NULL
-);
+  );

@@ -1,7 +1,8 @@
 package tr.nttdata.poc.minicommerce.product.controller;
 
-import java.util.List;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,20 +10,35 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
 import tr.nttdata.poc.minicommerce.product.model.Product;
 import tr.nttdata.poc.minicommerce.product.service.ProductService;
+
+import java.io.IOException;
+import java.util.List;
+
+import static tr.nttdata.poc.minicommerce.product.service.UtilService.decompressImage;
+import static tr.nttdata.poc.minicommerce.product.service.UtilService.imgToBase64;
 
 @RestController
 public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @PostMapping("/addProduct")
-    public Product addProduct(@RequestBody Product product) {
-        return productService.createProduct(product);
+    @PostMapping(value = "/addProduct", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public Product addProduct(
+            @RequestParam String name,
+            @RequestParam String description,
+            @RequestParam double price,
+            @RequestParam("file") MultipartFile file
+    ) throws IOException {
+        Product product = new Product();
+        product.setName(name);
+        product.setDescription(description);
+        product.setPrice(price);
+        return productService.createProduct(product, file);
     }
 
     @GetMapping("/products")
@@ -61,5 +77,19 @@ public class ProductController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    // TODO: Remove after tests
+    @GetMapping("/converted-images")
+    public List<Product> test() {
+
+        List<Product> list = productService.getAllProducts();
+        for (Product item : list) {
+            if (item.getImage() != null) {
+                String base64String = imgToBase64(decompressImage(item.getImage()));
+                item.setImgBase64(base64String);
+            }
+        }
+        return list;
     }
 }

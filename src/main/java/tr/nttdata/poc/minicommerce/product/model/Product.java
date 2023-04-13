@@ -20,4 +20,8 @@ public class Product {
     private String imageuri;
     @Column(name = "price")
     private double price;
+    @Lob@Column(name = "image")
+    private byte[] image;
+    @Transient
+    private String imgBase64;
 }
