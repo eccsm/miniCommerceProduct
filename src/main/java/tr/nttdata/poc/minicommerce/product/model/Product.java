@@ -2,26 +2,25 @@ package tr.nttdata.poc.minicommerce.product.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
-@Entity
-@Table(name = "products")
-public class Product {
+@Document(collection = "product")
+public class Product implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private String id;
-    @Column(name = "name")
     private String name;
-    @Column(name = "description")
     private String description;
-    @Column(name = "imageuri")
-    private String imageuri;
-    @Column(name = "price")
     private double price;
-    @Lob@Column(name = "image")
-    private byte[] image;
-    @Transient
-    private String imgBase64;
+    private String imageUri;
+
+    public Product(String name, String description, double price, String imageUri) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.imageUri = imageUri;
+    }
 }
