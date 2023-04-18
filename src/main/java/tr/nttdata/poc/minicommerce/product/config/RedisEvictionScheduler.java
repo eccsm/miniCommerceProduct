@@ -10,7 +10,6 @@ public class RedisEvictionScheduler {
     @Autowired
     private CacheManager cacheManager;
 
-    @Scheduled(fixedRate = 20000)
     @Scheduled(cron="0 0 0 * * *")
     public void evictAllCaches() {
         System.out.println("Scheduled");
