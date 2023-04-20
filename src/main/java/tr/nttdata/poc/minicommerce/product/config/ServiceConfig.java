@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import lombok.*;
 
 @Configuration
-@ConfigurationProperties(prefix = "mini-commerce-product")
+//@ConfigurationProperties(prefix = "mini-commerce-product")
 @Getter
 @Setter
 @ToString
